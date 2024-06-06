@@ -1,0 +1,205 @@
+{%extends "project/home_page.html"%}
+{%block body_block%}
+<style>
+.container {
+    background-color: #e9e9e9;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+.navbar {
+        color: #fff;
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+}
+
+.container.darker {
+    background-color: #ffffff;
+}
+
+/* Author Name Styling */
+.author {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+/* Message Content Styling */
+.content {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+/* Time Stamp Styling */
+.timestamp {
+    font-size: 0.8em;
+    color: #888;
+}
+
+/* Scrollbar Styling */
+#display {
+    max-height: 400px;
+    overflow-y: auto; /* Use auto to show scrollbar only when needed */
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent; /* Customize scrollbar color */
+}
+
+/* Input Field and Send Button Styling */
+#message {
+    width: calc(100% - 80px);
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#sendBtn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sendBtn:hover {
+    background-color: #0056b3;
+}
+    .group-info {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 3em;
+        color: #bd2929;
+    }
+
+    .group-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .group-links a {
+        margin-right: 20px;
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    .group-links a:hover {
+        color: #0056b3;
+    }
+</style>
+<body>
+    <div class="group-info">
+        <p>Group Name: {{ group.name }}</p>
+    </div>
+    
+    <div class="group-links">
+        <a href="{% url 'project:group_detail' pk=group.id %}">Group Details</a>
+        {% if user.is_staff %}
+            <a href="{% url 'project:group_delete' pk=group.id %}">Delete Group</a>
+            <a href="{% url 'project:group_update' pk=group.id %}">Update Group</a>
+        {% endif %}
+    </div>
+
+
+
+    <div id="display">
+        
+    </div>
+
+
+<form id="sendMessageForm" method="POST">
+    {% csrf_token %}
+    {{ send.as_p }}
+    <input type="text" name="message" id="message" width="100px"/>
+    <button type="submit">Send</button>
+</form>
+
+
+<script>
+$(document).ready(function(){
+    var autoScroll = true; // Flag to control automatic scrolling
+
+    $('#sendMessageForm').submit(function(e){
+        e.preventDefault(); // Prevent the default form submission
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(), // Serialize form data
+            success: function(response){
+                // Assuming the server responds with HTML containing the new message
+                $('#display').append(response); // Append the new message
+                console.log('Message sent successfully!');
+
+                if (autoScroll) {
+                    // Scroll to the bottom of the display area
+                    $('#display').scrollTop($('#display')[0].scrollHeight);
+                }
+            },
+            error: function(error){
+                console.error('Error:', error);
+            }
+        });
+
+        // Clear the input field after sending the message
+        $('#message').val('');
+
+        // Do not focus on the input field to prevent automatic scrolling
+        return false;
+    });
+
+    // Function to update messages display
+    function updateMessages() {
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'project:getMessage' pk=group.id %}",
+            success: function(response){
+                // Clear the display area
+                $("#display").html('');
+                
+                // Append each message
+                for (var key in response.messages){
+                    var temp = "<div class='container darker'><b>" + response.messages[key].author + "</b><p>" + response.messages[key].content + "</p><span class='time-left'>" + response.messages[key].timestamp + "</span></div>";
+                    $("#display").append(temp); // Append each message
+                }
+
+                if (autoScroll) {
+                    // Scroll to the bottom of the display area after updating messages
+                    $('#display').scrollTop($('#display')[0].scrollHeight);
+                }
+            },
+            error: function(response){
+                alert('An error occurred');
+            }
+        });
+    }
+
+    // Call the updateMessages function initially and then at intervals
+    updateMessages(); // Call initially
+    setInterval(updateMessages, 1000); // Update messages at intervals (adjust interval time as needed)
+
+    // Event listener for scrolling in the display area
+    $('#display').scroll(function(){
+        var scrollHeight = $('#display')[0].scrollHeight;
+        var scrollTop = $('#display').scrollTop();
+        var outerHeight = $('#display').outerHeight();
+
+        // Check if the user has scrolled to the bottom
+        if (scrollHeight - scrollTop === outerHeight) {
+            autoScroll = true; // Enable automatic scrolling if at the bottom
+        } else {
+            autoScroll = false; // Disable automatic scrolling if not at the bottom
+        }
+    });
+});
+</script>
+
+{%endblock%}
+
+

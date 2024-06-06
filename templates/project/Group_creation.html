@@ -1,0 +1,87 @@
+{% extends "project/home_page.html" %}
+{% block body_block %}
+<style>
+    
+    .container {
+        align-items: center;
+        
+    }
+.navbar {
+    background: #ffffff;
+    color: #ffffff;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 3em;
+    color: #000000;
+}
+
+form {
+    background: #fff;
+    margin-left: 350px;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    text-align: center;
+}
+
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group label {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+</style>
+
+
+<h1>Create Group</h1>
+<div class="container">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.as_p }}
+    </div>
+    <input type="submit" value="Submit">
+</form>
+</div>
+{% endblock %}

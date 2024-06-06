@@ -1,0 +1,91 @@
+{% extends "project/home_page.html" %}
+{% block body_block %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+    }
+
+    ol {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px;
+    }
+
+    li {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .group-name {
+        font-size: 1.2em;
+    }
+
+    .group-action {
+        margin-left: auto;
+    }
+    .group-creation-link a {
+        display: inline-block;
+        background-color: #28a745;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .group-creation-link a:hover {
+        background-color: #218838;
+    }
+</style>
+{% if user.is_staff %}
+<div class="group-creation-link">
+    <a href="{% url "project:group_creation" %}">Create a New Group</a>
+</div>
+{% endif %}
+<h1>Please choose one of these groups!</h1>
+
+<ol>
+    {% for group in groups %}
+    <li>
+        <span class="group-name">{{ group.name }}</span>
+        <form method="POST" action="{% url 'project:send_request' pk=group.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="group_id" value="{{ group.id }}">
+            <button type="submit" class="group-action">Join</button>
+        </form>
+    </li>
+    {% endfor %}
+</ol>
+{% endblock %}

@@ -1,0 +1,28 @@
+{%extends "project/home_page.html"%}
+{%block body_block%}
+<style>
+    
+</style>
+<div class="container">
+    <form method="post" class="form-inline">
+        {%csrf_token%}
+        <div class="form-group">
+            <input type="text" name="city" placeholder="city">
+        </div>
+        <button type="submit" class="btn btn-primary">Get Weather</button>
+
+</div>
+    </form>
+    {%if weather_data%}
+    <div class="weather-info">
+    <h1>{{weather_data.city}}</h1>
+    <h2>{{weather_data.temprature}} &#8451;</h2>
+    <p>{{weather_data.description}}</p>
+    <img src="http://openweathermap.org/img/w/{{weather_data.icon}}.png" alt="{{weather_data.description}}">
+    </div>
+
+
+    {%endif%}
+
+
+{%endblock%}

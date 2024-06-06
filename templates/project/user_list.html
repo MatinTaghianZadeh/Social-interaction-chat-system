@@ -1,0 +1,74 @@
+{% extends "project/home_page.html" %}
+{% block body_block %}
+
+<title>Add Members</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        flex-direction: column;
+        
+        margin: 0;
+        color: #fff;
+    }
+
+    
+    
+
+    h1 {
+        color:black;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2.5em;
+    }
+
+    ol {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .list {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .add {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    li a:hover {
+        background-color: #0056b3;
+    }
+    .user{
+        color:rgb(0, 0, 0)
+    }
+</style>
+
+
+
+<div class="container">
+    <h1>Add Members</h1>
+    <ol>
+        {% for user in Users %}
+        <li class="list">
+            <div class="user">{{ user.username }}</div>
+            {% if not user.is_staff and user not in Group.members.all %}
+            <a class="add" href="{% url 'project:add_member' group_pk=group_pk user_pk=user.pk %}">Add</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+
+{% endblock %}

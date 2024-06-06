@@ -1,0 +1,43 @@
+{% extends "project/home_page.html" %}
+{%load static%}
+{% block body_block %}
+
+<title>Pending Request</title>
+<style>
+    
+
+    .pending-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        margin: 20px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 50px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .pending-container h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color:black;
+    }
+
+    .pending-container p {
+        font-size: 1.2em;
+        color:black;
+    }
+</style>
+
+
+<div class="pending-container">
+    <img src="{%static "Images/Ok-sign-emoticon-icon.jpg"%}" alt="Hello">
+    <div>
+        <h1>Your join request is pending approval</h1>
+        <p>We'll notify you once it's approved.</p>
+    </div>
+</div>
+
+{% endblock %}
